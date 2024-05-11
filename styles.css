@@ -1,0 +1,11 @@
+.game-peg {
+  cursor: pointer;
+}
+
+.isHovered {
+  color: burlywood;
+}
+
+.selected {
+  color: darkseagreen;
+}

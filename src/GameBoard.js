@@ -8,11 +8,10 @@ var GameBoard = function () {
 /**
  * Functions that interact/alter the GameBoard
  */
-
 GameBoard.prototype.stringFormattedGameBoard = function() {
   // Returns an array of strings that are formatted to be pegs
   return this.board.map((peg) => {
-    return peg.reduce((prev, cur) => { return prev + " " + cur}, "---");
+    return peg.reduce((prev, cur) => prev + " " + cur, "---");
   });
 };
 
@@ -30,10 +29,9 @@ GameBoard.prototype.moveIsValid = function (from, to) {
     return [false, "Cannot move disk from an empty peg"];
   } else if (from[from.length - 1] > to[to.length - 1]) {
     return [false, "You cannot move a larger disc on top of a smaller one"];
-  } else if (to.length === 0) {
+  } else {
     return [true, "That move was successful"];
   }
-  return [false, "Move is not valid"];
 }
 
 GameBoard.prototype.move = function(from, to) {
@@ -44,19 +42,15 @@ GameBoard.prototype.move = function(from, to) {
     var removeDisk = startingPeg.pop();
     targetPeg.push(removeDisk);
     this.logGameBoard(moveIsValid[1] + ", " + "the board is now: ");
-    return this.board;
+    return moveIsValid;
   }
 
   this.logGameBoard(moveIsValid[1] + ", " + "The board is still: ");
-  return moveIsValid[1];
+  return moveIsValid;
 }
 
-GameBoard.prototype.resetBoard = function() {
-  var newBoard = [];
-  // Todo: rethink this method 
-  for (let i = 0; i < this.numberOfPegs; i++){
-    newBoard.push([]);
-  }
+GameBoard.prototype.resetBoard = function() { 
+  const newBoard = new Array(3).fill().map(() => []);
   for (let i = this.disks; i > 0; i--) {
     newBoard[0].push(i);
   }
@@ -67,6 +61,7 @@ GameBoard.prototype.resetBoard = function() {
 }
 
 GameBoard.prototype.checkIfAllButOnePegIsEmpty = function(board){
+  //todo: check
   let emptyPeg;
   board.forEach((peg, index) => {
     if (peg.length > 0) {
@@ -78,7 +73,7 @@ GameBoard.prototype.checkIfAllButOnePegIsEmpty = function(board){
     }
   })
   return emptyPeg;
-}
+};
 
 GameBoard.prototype.checkIfPegIsInOrder = function(peg) {
   let oneLessThanPrevious = (cur, prev) => {
@@ -86,56 +81,15 @@ GameBoard.prototype.checkIfPegIsInOrder = function(peg) {
   }
 
   return peg.every((disk, index, arr) => {
-    if (index == 0) return true;
-    return oneLessThanPrevious(disk, arr[index - 1]);
-  })
-}
-
-
+    return (index == 0) ? true : oneLessThanPrevious(disk, arr[index - 1]); 
+  });
+};
 
 GameBoard.prototype.checkWinner = function(board) {
   let filledPeg = this.checkIfAllButOnePegIsEmpty(board);
-  let winner = false;
-  if (filledPeg > 0) {
-    winner = this.checkIfPegIsInOrder(board[filledPeg]);
-  }
-  return winner;
+
+  return (filledPeg > 0) && this.checkIfPegIsInOrder(board[filledPeg]);
 }
 
-
-/**
- * HTML Altering functions
- */
-
-GameBoard.prototype.createPegElementsArray = function() {
-  return this.stringFormattedGameBoard().map((pegString) => {
-    var pegText = document.createElement("h2");
-    pegText.innerHTML = pegString;
-    var pegElement = document.createElement("div");
-    pegElement.setAttribute("class", "game-peg");
-    pegElement.appendChild(pegText);
-    return pegElement;
-  });
-};
-
-GameBoard.prototype.clearPegElements = function() {
-  let elementsArray = Array.from(document.getElementsByClassName("game-peg"));
-  console.log(elementsArray);
-  return elementsArray.forEach((element) => {
-    element.remove();
-  });
-};
-
-GameBoard.prototype.displayPegsElement = function(pegElementsArray) {
-  var gameBoard = document.getElementById("game-board");
-  // Todo: Do I need this validation check? 
-  if (!Array.isArray(pegElementsArray)){
-    console.log("please provide an array")
-    return false
-  }
-  return pegElementsArray.forEach((element) => {
-    gameBoard.appendChild(element);
-  });
-};
 
 
