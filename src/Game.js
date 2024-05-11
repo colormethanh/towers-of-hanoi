@@ -3,7 +3,6 @@ console.log("Towers of Hanoi!")
 var Game = function (){
   this.gameBoard = new GameBoard();
   this.firstSelection = -1;
-  this.secondSelection = -1;
 }
 
 Game.prototype.displayPegElements = function (pegElementsArray) {
@@ -55,8 +54,12 @@ Game.prototype.handleMove = function (from, to){
   var moved = this.gameBoard.move(from, to);
   if (moved[0]) {
     this.updateGameBoardElements();
+    var winner = this.gameBoard.checkWinner(this.gameBoard.board);
+    if (winner) {
+      return alert("winner winner chicken dinner"); 
+    }
   } else {
-    alert(moved[1])
+    return alert(moved[1]);
   }
 };
 
@@ -65,11 +68,13 @@ Game.prototype.handleMouseHover = function (peg) {
 };
 
 Game.prototype.handleClick = function(peg) {
-  if (this.firstSelection < 0 || this.firstSelection === peg.id) {
+  if (this.firstSelection < 0) {
     peg.classList.toggle("selected");
     this.firstSelection = peg.id;
-  } else {
-    // Triggers when first selection and second selection has been made
+  } else if (this.firstSelection === peg.id){
+    peg.classList.toggle("selected")
+    this.firstSelection = -1;
+  }else {
     var alreadySelectedElement = document.getElementById(this.firstSelection);
     this.handleMove(this.firstSelection, peg.id);
     alreadySelectedElement.classList.toggle("selected");
@@ -94,9 +99,7 @@ Game.prototype.initPegEventListeners = function () {
 
 
 var GAME = new Game();
-// var GAME.gameBoard = new GameBoard();
 GAME.gameBoard.logGameBoard();
-// GAME.displayPegElements(GAME.createPegElementsArray(GAME.gameBoard));
 GAME.updateGameBoardElements();
 
 var resetBoardBtn = document.getElementById("reset-btn");
@@ -104,8 +107,4 @@ resetBoardBtn.addEventListener("click", () => {
   GAME.resetGame();
 })
 
-// GAME.gameBoard.move(0,1);
-// GAME.gameBoard.clearPegElements();
-// GAME.gameBoard.displayPegsElement(GAME.gameBoard.createPegElementsArray());
-// GAME.gameBoard.move(0,1);
 

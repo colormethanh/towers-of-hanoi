@@ -42,6 +42,7 @@ GameBoard.prototype.move = function(from, to) {
     var removeDisk = startingPeg.pop();
     targetPeg.push(removeDisk);
     this.logGameBoard(moveIsValid[1] + ", " + "the board is now: ");
+
     return moveIsValid;
   }
 
@@ -87,7 +88,6 @@ GameBoard.prototype.checkIfPegIsInOrder = function(peg) {
 
 GameBoard.prototype.checkWinner = function(board) {
   let filledPeg = this.checkIfAllButOnePegIsEmpty(board);
-
   return (filledPeg > 0) && this.checkIfPegIsInOrder(board[filledPeg]);
 }
 
