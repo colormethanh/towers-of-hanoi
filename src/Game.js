@@ -58,6 +58,12 @@ Game.prototype.updateGameBoardElements = function () {
   this.displayPegElements(this.createPegElementsArray(this.gameBoard));
 };
 
+Game.prototype.checkWinner = function(){
+  var winner = this.gameBoard.checkWinner();
+  
+  return winner ? this.handleWin() : this.handleLose();
+}
+
 Game.prototype.handleWin = function() {
   console.log("Winner Winner chicken dinner!");
   alert("Winner Winner chicken dinner!");
@@ -153,9 +159,9 @@ dialogCloseBtn.addEventListener("click", () => {
 
 var checkWinnerBtn = document.getElementById("check-winner-btn");
 checkWinnerBtn.addEventListener("click", () =>{
-  var winner = GAME.gameBoard.checkWinner(GAME.gameBoard.board);
-
-  winner ? GAME.handleWin() : GAME.handleLose();
+  GAME.checkWinner();
 })
+
+dialog.showModal();
 
 
