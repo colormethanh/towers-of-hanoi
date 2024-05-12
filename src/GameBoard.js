@@ -11,7 +11,7 @@ var GameBoard = function () {
 GameBoard.prototype.stringFormattedGameBoard = function() {
   // Returns an array of strings that are formatted to be pegs
   return this.board.map((peg) => {
-    return peg.reduce((prev, cur) => prev + " " + cur, "---");
+    return peg.reduce((prev, cur) => prev + cur, "---");
   });
 };
 
@@ -25,6 +25,11 @@ GameBoard.prototype.logGameBoard = function (message) {
 
 GameBoard.prototype.moveIsValid = function (from, to) {
   // Returns an array containing if the move is valid and it's error message
+
+  if (!from || !to){
+    return [false, "Valid disk not selected"]
+  }
+
   if (from.length === 0){
     return [false, "Cannot move disk from an empty peg"];
   } else if (from[from.length - 1] > to[to.length - 1]) {
@@ -77,7 +82,7 @@ GameBoard.prototype.checkIfAllButOnePegIsEmpty = function(board){
 };
 
 GameBoard.prototype.checkIfPegIsInOrder = function(peg) {
-  let oneLessThanPrevious = (cur, prev) => {
+  var oneLessThanPrevious = (cur, prev) => {
     return cur == prev - 1;
   }
 
@@ -86,8 +91,9 @@ GameBoard.prototype.checkIfPegIsInOrder = function(peg) {
   });
 };
 
-GameBoard.prototype.checkWinner = function(board) {
-  let filledPeg = this.checkIfAllButOnePegIsEmpty(board);
+GameBoard.prototype.checkWinner = function() {
+  var board = this.board;
+  var filledPeg = this.checkIfAllButOnePegIsEmpty(board);
   return (filledPeg > 0) && this.checkIfPegIsInOrder(board[filledPeg]);
 }
 

@@ -34,12 +34,21 @@ Game.prototype.resetGame = function() {
 
 Game.prototype.createPegElementsArray = function (board) {
   return board.stringFormattedGameBoard().map((pegString, index) => {
-    var pegText = document.createElement("h2");
-    pegText.innerHTML = pegString;
     var pegElement = document.createElement("div");
     pegElement.setAttribute("class", "game-peg");
-    pegElement.setAttribute("id", index)
-    pegElement.appendChild(pegText);
+    pegElement.setAttribute("id", index);
+
+    Array.from(pegString).forEach((diskSize) => {
+      var diskElement = document.createElement("div");
+      if (diskSize === "-"){
+        diskElement.classList.add("peg-footer");
+      } else {
+        diskElement.innerHTML = diskSize;
+        diskElement.classList.add("disk-" + diskSize);
+        diskElement.classList.add("disk")
+      }
+      pegElement.appendChild(diskElement);
+    })
     return pegElement;
   });
 };
@@ -47,7 +56,18 @@ Game.prototype.createPegElementsArray = function (board) {
 Game.prototype.updateGameBoardElements = function () {
   this.clearPegElements();
   this.displayPegElements(this.createPegElementsArray(this.gameBoard));
+};
+
+Game.prototype.handleWin = function() {
+  console.log("Winner Winner chicken dinner!");
+  alert("Winner Winner chicken dinner!");
+  this.resetGame();
 }
+
+Game.prototype.handleLose = function() {
+  console.log("No winner No chicken dinner.");
+  alert("No winner No chicken dinner.");
+};
 
 Game.prototype.handleMove = function (from, to){
   console.log ("Moving from peg " + from + " to peg " + to);
@@ -56,7 +76,7 @@ Game.prototype.handleMove = function (from, to){
     this.updateGameBoardElements();
     var winner = this.gameBoard.checkWinner(this.gameBoard.board);
     if (winner) {
-      return alert("winner winner chicken dinner"); 
+      this.handleWin();
     }
   } else {
     return alert(moved[1]);
@@ -105,6 +125,37 @@ GAME.updateGameBoardElements();
 var resetBoardBtn = document.getElementById("reset-btn");
 resetBoardBtn.addEventListener("click", () => {
   GAME.resetGame();
+});
+
+var dialog = document.getElementById("instructions-dialog");
+var dialogCloseBtn = document.getElementById("instructions-close")
+
+
+var openInstructions = function(dialog) {
+  if (dialog.open) {
+    console.log("Dialog Opened");
+  } else {
+    console.log("Dialog closed")
+  }
+}
+
+
+var gameInstructionsBtn = document.getElementById("game-instructions");
+gameInstructionsBtn.addEventListener("click", () => {
+  dialog.showModal();
+  openInstructions(dialog);
+}) 
+
+dialogCloseBtn.addEventListener("click", () => {
+  dialog.close("Instructions closed");
+  openInstructions(dialog);
+})
+
+var checkWinnerBtn = document.getElementById("check-winner-btn");
+checkWinnerBtn.addEventListener("click", () =>{
+  var winner = GAME.gameBoard.checkWinner(GAME.gameBoard.board);
+
+  winner ? GAME.handleWin() : GAME.handleLose();
 })
 
 
